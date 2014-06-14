@@ -1,0 +1,342 @@
+/-------
+<h1>tap-i18n</h1>
+<h3>Developing Meteor's Internationalization Build Plugin</h3>
+<p>
+    <small>By <a href="http://theosp.github.io/">Daniel Chcouri</a> / <a href="http://theosp.github.io/">theosp.github.io</a></small>
+</p>
+-------/
+
+/------- Internationalization - i18n
+>>> i18n.png 486 50
+>>> i18n2.png 526 263
+-------/
+
+/------- tap-i18n - i18n for Meteor
+
+/*
+* Readable Syntax
+* Advanced i18n
+* All Encompassing
+* Transparent Namespacing
+* Ready to Scale
+*/
+
+-------/
+
+/------- Readable Syntax
+
+/####### page.html
+<template name="x">
+    {{_ "click"}}
+</template>
+#######/
+
+/####### en.i18n.json
+{
+    "click": "Click Here"
+}
+#######/
+
+/####### Result
+Click Here
+#######/
+
+-------/
+
+/------- Advanced i18n - sprintf
+
+/####### page.html
+<template name="x">
+    {{_ "hello" "Daniel" "2014-05-22"}}
+</template>
+#######/
+
+/####### en.i18n.json
+{
+    "hello": "Hello %s, your last visit was on: %s"
+}
+#######/
+
+/####### Result
+Hello Daniel, your last visit was on: 2014-05-22
+#######/
+
+-------/
+
+/------- Advanced i18n - Named variables
+
+/####### page.html
+<template name="x">
+    {{_ "hello" "2014-05-22" user_name="Daniel"}}
+</template>
+#######/
+
+/####### en.i18n.json
+{
+    "hello": "Hello __user_name__, your last visit was on: %s"
+}
+#######/
+
+/####### Result
+Hello Daniel, your last visit was on: 2014-05-22
+#######/
+
+-------/
+
+/------- Advanced i18n - singular/plural
+
+/####### page.html
+<template name="x">
+    {{_ "inbox_status" "2014-05-22" username="Daniel" count=1}}
+    {{_ "inbox_status" "2014-05-22" username="Chris" count=4}}
+</template>
+#######/
+
+/####### en.i18n.json
+{
+    "inbox_status": "__username__, You have a new message (inbox last checked %s)",
+    "inbox_status_plural": "__username__, You have __count__ new messages (last checked %s)"
+}
+#######/
+
+/####### Result
+Daniel, You have a new message (inbox last checked 2014-05-22)
+Chris, You have 4 new messages (last checked 2014-05-22)
+#######/
+
+-------/
+
+/------- Advanced i18n - context
+
+/####### page.html
+<template name="x">
+    {{_ "actors_count" count=1 context="male" }}
+    {{_ "actors_count" count=2 context="female" }}
+</template>
+#######/
+
+/####### en.i18n.json
+{
+    "actors_count": "There is one actor in the movie",
+    "actors_count_male": "There is one actor in the movie",
+    "actors_count_female": "There is one actress in the movie",
+    "actors_count_plural": "There are __count__ actors in the movie",
+    "actors_count_male_plural": "There are __count__ actors in the movie",
+    "actors_count_female_plural": "There are __count__ actresses in the movie",
+}
+#######/
+
+/####### Result
+There is one actor in the movie
+There are 2 actresses in the movie
+#######/
+
+-------/
+
+/------- Advanced i18n - Dialects Support
+
+<h2>Auto fallback:</h2>
+
+/*
+* Language dialect, if specified ("pt-BR")
+* Base language ("pt")
+* Base English ("en")
+*/
+
+-------/
+
+/------- All Encompassing
+
+Understanding the different perspectives of project and package developers, tap-i18n provides specific tools for project and package developers, allowing for total coverage and seamless integration into the Meteor package ecosystem.
+
+-------/
+
+/------- Transparent Namespacing
+
+You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapaces for you.
+
+-------/
+
+
+/------- Ready to Scale
+
+/*
+* Translations are unified into a single JSON file per language that includes both package and project-level translations
+* On-demand: translations are loaded only when they are needed
+* 3rd Party CDN Support
+*/
+
+-------/
+
+/------- Meteor Packages
+
+/*
+* Meteor's units of reusability
+* Simply a directory with a package.js file in it
+* Explicitly list all of their source files and load order
+* Have their own package namespace: variables used without var available on all the package's files
+*/
+
+-------/
+
+/------- deps - package.js
+
+/####### 
+Package.describe({
+  summary: "Dependency mananger to allow reactive callbacks",
+  internal: true
+});
+
+Package.on_use(function (api) {
+  api.export('Deps');
+  api.add_files('deps.js');
+  api.add_files('deprecated.js');
+});
+
+Package.on_test(function (api) {
+  api.use('tinytest');
+  api.use('deps');
+  api.add_files('deps_tests.js', 'client');
+});
+#######/
+
+-------/
+
+/------- tap-i18n - package.js
+
+/####### 
+Package.on_use(function (api) {
+  api.use(["coffeescript", "underscore", "meteor"], ['server', 'client']);
+  api.use(["http-methods"], 'server');
+  api.use(["deps", "session", "jquery", "templating"], 'client');
+
+  // load and init TAPi18next
+  api.add_files('lib/tap_i18next/tap_i18next-1.7.3.js', 'client');
+  api.export("TAPi18next");
+  api.add_files('lib/tap_i18next/tap_i18next_init.js', 'client');
+
+  // load TAPi18n
+  api.add_files('lib/globals.js', ['client', 'server']);
+  api.add_files('lib/tap_i18n/tap_i18n-common.coffee', 'server');
+
+  // We use the bare option since we need TAPi18n in the package level
+  // and coffee adds vars to all (so without bare all vars are in the
+  // file level)
+  api.add_files('lib/tap_i18n/tap_i18n-common.coffee', 'client',
+                  {bare: true});
+
+  api.add_files('lib/tap_i18n/tap_i18n-server.coffee', 'server');
+  api.add_files('lib/tap_i18n/tap_i18n-client.coffee', 'client',
+                  {bare: true});
+
+  api.export("TAPi18n");
+});
+#######/
+
+-------/
+
+/------- Meteor Build Plugins
+
+/*
+* Allow us to perform special procedures for specific file types
+* Allow us to generate js and css that will be part of the project build
+*/
+
+<br />
+<br />
+<h3> Defined in package.js, but they are actully: </h3>
+
+/*
+* Fully-fledged Meteor programs in their own right
+* Have their own namespace, package dependencies, source files and npm requirements
+*/
+
+-------/ 
+
+/------- Less Build Plugin
+
+/####### package.js
+Package._transitional_registerBuildPlugin({
+  name: "compileLess",
+  use: [],
+  sources: [
+    'plugin/compile-less.js'
+  ],
+  npmDependencies: {"less": "1.6.1"}
+});
+#######/
+
+-------/
+
+/------- Less Build Plugin
+
+/####### plugin/compile-less.js
+Plugin.registerSourceHandler("less", function (compileStep) {
+  //
+  // compilation code
+  //
+
+  compileStep.addStylesheet({
+    path: compileStep.inputPath + ".css",
+    data: css,
+    sourceMap: sourceMap
+  });
+});;
+
+// Register import.less files with the dependency watcher, without actually
+// processing them. There is a similar rule in the stylus package.
+Plugin.registerSourceHandler("import.less", function () {
+  // Do nothing
+});
+
+// Backward compatibility with Meteor 0.7
+Plugin.registerSourceHandler("lessimport", function () {});
+#######/
+
+-------/
+
+/------- tap-i18n Build Plugin
+
+/####### package.js
+// Register our build plugin
+Package._transitional_registerBuildPlugin({
+  name: "compileI18n",
+  use: ["coffeescript", "meteor", "simple-schema", "check", "templating"],
+  sources: [
+    'lib/globals.js',
+    'lib/plugin/wrench.js',
+    'lib/plugin/language_names.js',
+    'lib/plugin/compile-i18n.coffee'
+  ]
+});
+#######/
+
+-------/
+
+/------- Build Plugins Pitfalls
+
+/*
+* If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b
+* Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous
+* Build plugins has no access to npm packages added via Npm.depends
+* Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed
+*/ 
+
+-------/
+
+/------- tap-i18n Build Plugin - Live Overview
+
+-------/
+
+/------- Testing Build Plugins with Configurable Build Options - Live Overview
+
+-------/
+
+/------- Fork me on GitHub!
+
+<h3>TAPevents/tap-i18n</h3>
+<br /><br /><br />
+The development of tap-i18n supported by TAPevents.com<br />
+Daniel Chcouri / theosp.github.io
+
+-------/

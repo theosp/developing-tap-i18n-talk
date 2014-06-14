@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>tap-i18n :: Developing Meteor's Internationalization Build Plugin</title>
+
+		<meta name="description" content="">
+		<meta name="author" content="Daniel Chcouri">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+        <link rel="stylesheet" href="http://www.jointjs.com/css/joint.css" />
+        <script src="http://www.jointjs.com/js/joint.js"></script>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+
+      <section><h2><h1>tap-i18n</h1></h2>
+<h3>Developing Meteor's Internationalization Build Plugin</h3>
+<p>
+    <small>By <a href="http://theosp.github.io/">Daniel Chcouri</a> / <a href="http://theosp.github.io/">theosp.github.io</a></small>
+</p>
+</section>
+<section><h2>Internationalization - i18n</h2>
+<img width="486" height="50" src="./images/i18n.png">
+<img width="526" height="263" src="./images/i18n2.png">
+</section>
+<section><h2>tap-i18n - i18n for Meteor</h2>
+
+<ul>
+<li>Readable Syntax</li>
+<li>Advanced i18n</li>
+<li>All Encompassing</li>
+<li>Transparent Namespacing</li>
+<li>Ready to Scale</li>
+</ul>
+</section>
+<section><h2>Readable Syntax</h2>
+
+page.html <pre><code data-trim contenteditable>
+<template name="x">
+    {{_ "click"}}
+</template>
+</code></pre>
+en.i18n.json <pre><code data-trim contenteditable>
+{
+    "click": "Click Here"
+}
+</code></pre>
+Result <pre><code data-trim contenteditable>
+Click Here
+</code></pre>
+</section>
+<section><h2>Advanced i18n - sprintf</h2>
+
+page.html <pre><code data-trim contenteditable>
+<template name="x">
+    {{_ "hello" "Daniel" "2014-05-22"}}
+</template>
+</code></pre>
+en.i18n.json <pre><code data-trim contenteditable>
+{
+    "hello": "Hello %s, your last visit was on: %s"
+}
+</code></pre>
+Result <pre><code data-trim contenteditable>
+Hello Daniel, your last visit was on: 2014-05-22
+</code></pre>
+</section>
+<section><h2>Advanced i18n - Named variables</h2>
+
+page.html <pre><code data-trim contenteditable>
+<template name="x">
+    {{_ "hello" "2014-05-22" user_name="Daniel"}}
+</template>
+</code></pre>
+en.i18n.json <pre><code data-trim contenteditable>
+{
+    "hello": "Hello __user_name__, your last visit was on: %s"
+}
+</code></pre>
+Result <pre><code data-trim contenteditable>
+Hello Daniel, your last visit was on: 2014-05-22
+</code></pre>
+</section>
+<section><h2>Advanced i18n - singular/plural</h2>
+
+page.html <pre><code data-trim contenteditable>
+<template name="x">
+    {{_ "inbox_status" "2014-05-22" username="Daniel" count=1}}
+    {{_ "inbox_status" "2014-05-22" username="Chris" count=4}}
+</template>
+</code></pre>
+en.i18n.json <pre><code data-trim contenteditable>
+{
+    "inbox_status": "__username__, You have a new message (inbox last checked %s)",
+    "inbox_status_plural": "__username__, You have __count__ new messages (last checked %s)"
+}
+</code></pre>
+Result <pre><code data-trim contenteditable>
+Daniel, You have a new message (inbox last checked 2014-05-22)
+Chris, You have 4 new messages (last checked 2014-05-22)
+</code></pre>
+</section>
+<section><h2>Advanced i18n - context</h2>
+
+page.html <pre><code data-trim contenteditable>
+<template name="x">
+    {{_ "actors_count" count=1 context="male" }}
+    {{_ "actors_count" count=2 context="female" }}
+</template>
+</code></pre>
+en.i18n.json <pre><code data-trim contenteditable>
+{
+    "actors_count": "There is one actor in the movie",
+    "actors_count_male": "There is one actor in the movie",
+    "actors_count_female": "There is one actress in the movie",
+    "actors_count_plural": "There are __count__ actors in the movie",
+    "actors_count_male_plural": "There are __count__ actors in the movie",
+    "actors_count_female_plural": "There are __count__ actresses in the movie",
+}
+</code></pre>
+Result <pre><code data-trim contenteditable>
+There is one actor in the movie
+There are 2 actresses in the movie
+</code></pre>
+</section>
+<section><h2>Advanced i18n - Dialects Support</h2>
+
+<h2>Auto fallback:</h2>
+
+<ul>
+<li>Language dialect, if specified ("pt-BR")</li>
+<li>Base language ("pt")</li>
+<li>Base English ("en")</li>
+</ul>
+</section>
+<section><h2>All Encompassing</h2>
+
+Understanding the different perspectives of project and package developers, tap-i18n provides specific tools for project and package developers, allowing for total coverage and seamless integration into the Meteor package ecosystem.
+
+</section>
+<section><h2>Transparent Namespacing</h2>
+
+You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapaces for you.
+
+</section>
+<section><h2>Ready to Scale</h2>
+
+<ul>
+<li>Translations are unified into a single JSON file per language that includes both package and project-level translations</li>
+<li>On-demand: translations are loaded only when they are needed</li>
+<li>3rd Party CDN Support</li>
+</ul>
+</section>
+<section><h2>Meteor Packages</h2>
+
+<ul>
+<li>Meteor's units of reusability</li>
+<li>Simply a directory with a package.js file in it</li>
+<li>Explicitly list all of their source files and load order</li>
+<li>Have their own package namespace: variables used without var available on all the package's files</li>
+</ul>
+</section>
+<section><h2>deps - package.js</h2>
+
+<pre><code data-trim contenteditable>
+Package.describe({
+  summary: "Dependency mananger to allow reactive callbacks",
+  internal: true
+});
+
+Package.on_use(function (api) {
+  api.export('Deps');
+  api.add_files('deps.js');
+  api.add_files('deprecated.js');
+});
+
+Package.on_test(function (api) {
+  api.use('tinytest');
+  api.use('deps');
+  api.add_files('deps_tests.js', 'client');
+});
+</code></pre>
+</section>
+<section><h2>tap-i18n - package.js</h2>
+
+<pre><code data-trim contenteditable>
+Package.on_use(function (api) {
+  api.use(["coffeescript", "underscore", "meteor"], ['server', 'client']);
+  api.use(["http-methods"], 'server');
+  api.use(["deps", "session", "jquery", "templating"], 'client');
+
+  // load and init TAPi18next
+  api.add_files('lib/tap_i18next/tap_i18next-1.7.3.js', 'client');
+  api.export("TAPi18next");
+  api.add_files('lib/tap_i18next/tap_i18next_init.js', 'client');
+
+  // load TAPi18n
+  api.add_files('lib/globals.js', ['client', 'server']);
+  api.add_files('lib/tap_i18n/tap_i18n-common.coffee', 'server');
+
+  // We use the bare option since we need TAPi18n in the package level
+  // and coffee adds vars to all (so without bare all vars are in the
+  // file level)
+  api.add_files('lib/tap_i18n/tap_i18n-common.coffee', 'client',
+                  {bare: true});
+
+  api.add_files('lib/tap_i18n/tap_i18n-server.coffee', 'server');
+  api.add_files('lib/tap_i18n/tap_i18n-client.coffee', 'client',
+                  {bare: true});
+
+  api.export("TAPi18n");
+});
+</code></pre>
+</section>
+<section><h2>Meteor Build Plugins</h2>
+
+<ul>
+<li>Allow us to perform special procedures for specific file types</li>
+<li>Allow us to generate js and css that will be part of the project build</li>
+</ul>
+<br />
+<br />
+<h3> Defined in package.js, but they are actully: </h3>
+
+<ul>
+<li>Fully-fledged Meteor programs in their own right</li>
+<li>Have their own namespace, package dependencies, source files and npm requirements</li>
+</ul>
+</section>
+<section><h2>Less Build Plugin</h2>
+
+package.js <pre><code data-trim contenteditable>
+Package._transitional_registerBuildPlugin({
+  name: "compileLess",
+  use: [],
+  sources: [
+    'plugin/compile-less.js'
+  ],
+  npmDependencies: {"less": "1.6.1"}
+});
+</code></pre>
+</section>
+<section><h2>Less Build Plugin</h2>
+
+plugin/compile-less.js <pre><code data-trim contenteditable>
+Plugin.registerSourceHandler("less", function (compileStep) {
+  //
+  // compilation code
+  //
+
+  compileStep.addStylesheet({
+    path: compileStep.inputPath + ".css",
+    data: css,
+    sourceMap: sourceMap
+  });
+});;
+
+// Register import.less files with the dependency watcher, without actually
+// processing them. There is a similar rule in the stylus package.
+Plugin.registerSourceHandler("import.less", function () {
+  // Do nothing
+});
+
+// Backward compatibility with Meteor 0.7
+Plugin.registerSourceHandler("lessimport", function () {});
+</code></pre>
+</section>
+<section><h2>tap-i18n Build Plugin</h2>
+
+package.js <pre><code data-trim contenteditable>
+// Register our build plugin
+Package._transitional_registerBuildPlugin({
+  name: "compileI18n",
+  use: ["coffeescript", "meteor", "simple-schema", "check", "templating"],
+  sources: [
+    'lib/globals.js',
+    'lib/plugin/wrench.js',
+    'lib/plugin/language_names.js',
+    'lib/plugin/compile-i18n.coffee'
+  ]
+});
+</code></pre>
+</section>
+<section><h2>Build Plugins Pitfalls</h2>
+
+<ul>
+<li>If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b</li>
+<li>Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous</li>
+<li>Build plugins has no access to npm packages added via Npm.depends</li>
+<li>Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed</li>
+</ul>
+</section>
+<section><h2>tap-i18n build plugin - Live Overview</h2>
+
+</section>
+<section><h2>Testing Build Plugins - Live Overview</h2>
+
+</section>
+<section><h2>Fork me on GitHub!</h2>
+
+<h3>TAPevents/tap-i18n</h3>
+<br /><br /><br />
+The development of tap-i18n supported by TAPevents.com<br />
+Daniel Chcouri / theosp.github.io
+
+</section>
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+                rollingLinks: false,
+
+				theme: "beige", // available themes are in /css/theme
+				transition: "linear", // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+					// { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
