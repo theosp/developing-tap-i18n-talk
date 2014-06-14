@@ -90,7 +90,7 @@ Result <pre><code data-trim contenteditable>
 Hello Daniel, your last visit was on: 2014-05-22
 </code></pre>
 </section>
-<section><h2>Advanced i18n - Named variables</h2>
+<section><h2>Advanced i18n - Named Variables</h2>
 
 page.html <pre><code data-trim contenteditable>
 <template name="x">
@@ -106,7 +106,7 @@ Result <pre><code data-trim contenteditable>
 Hello Daniel, your last visit was on: 2014-05-22
 </code></pre>
 </section>
-<section><h2>Advanced i18n - singular/plural</h2>
+<section><h2>Advanced i18n - Singular/Plural + Count</h2>
 
 page.html <pre><code data-trim contenteditable>
 <template name="x">
@@ -125,7 +125,7 @@ Daniel, You have a new message (inbox last checked 2014-05-22)
 Chris, You have 4 new messages (last checked 2014-05-22)
 </code></pre>
 </section>
-<section><h2>Advanced i18n - context</h2>
+<section><h2>Advanced i18n - Context</h2>
 
 page.html <pre><code data-trim contenteditable>
 <template name="x">
@@ -160,12 +160,15 @@ There are 2 actresses in the movie
 </section>
 <section><h2>All Encompassing</h2>
 
-Understanding the different perspectives of project and package developers, tap-i18n provides specific tools for project and package developers, allowing for total coverage and seamless integration into the Meteor package ecosystem.
-
+<ul>
+<li>Projects developers' needs are not the same as package developers'.</li>
+<li>Tap-i18n provides specific tools for project and package developers.</li>
+<li>Total coverage and seamless integration into the Meteor package ecosystem.</li>
+</ul>
 </section>
 <section><h2>Transparent Namespacing</h2>
 
-You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapaces for you.
+You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapace for you.
 
 </section>
 <section><h2>Ready to Scale</h2>
@@ -188,21 +191,10 @@ You don't need to worry about domain prefixing or package conflicts when you tra
 <section><h2>deps - package.js</h2>
 
 <pre><code data-trim contenteditable>
-Package.describe({
-  summary: "Dependency mananger to allow reactive callbacks",
-  internal: true
-});
-
 Package.on_use(function (api) {
   api.export('Deps');
   api.add_files('deps.js');
   api.add_files('deprecated.js');
-});
-
-Package.on_test(function (api) {
-  api.use('tinytest');
-  api.use('deps');
-  api.add_files('deps_tests.js', 'client');
 });
 </code></pre>
 </section>
@@ -245,7 +237,7 @@ Package.on_use(function (api) {
 </ul>
 <br />
 <br />
-<h3> Defined in package.js, but they are actully: </h3>
+<h3> Defined in package.js, but they are actually: </h3>
 
 <ul>
 <li>Fully-fledged Meteor programs in their own right</li>
@@ -311,14 +303,13 @@ Package._transitional_registerBuildPlugin({
 <ul>
 <li>If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b</li>
 <li>Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous</li>
-<li>Build plugins has no access to npm packages added via Npm.depends</li>
 <li>Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed</li>
 </ul>
 </section>
-<section><h2>tap-i18n build plugin - Live Overview</h2>
+<section><h2>tap-i18n Build Plugin - Live Overview</h2>
 
 </section>
-<section><h2>Testing Build Plugins - Live Overview</h2>
+<section><h2>Testing Build Plugins with Configurable Build Options - Live Overview</h2>
 
 </section>
 <section><h2>Fork me on GitHub!</h2>

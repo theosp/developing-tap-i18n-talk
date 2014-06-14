@@ -63,7 +63,7 @@ Hello Daniel, your last visit was on: 2014-05-22
 
 -------/
 
-/------- Advanced i18n - Named variables
+/------- Advanced i18n - Named Variables
 
 /####### page.html
 <template name="x">
@@ -83,7 +83,7 @@ Hello Daniel, your last visit was on: 2014-05-22
 
 -------/
 
-/------- Advanced i18n - singular/plural
+/------- Advanced i18n - Singular/Plural + Count
 
 /####### page.html
 <template name="x">
@@ -106,7 +106,7 @@ Chris, You have 4 new messages (last checked 2014-05-22)
 
 -------/
 
-/------- Advanced i18n - context
+/------- Advanced i18n - Context
 
 /####### page.html
 <template name="x">
@@ -147,13 +147,17 @@ There are 2 actresses in the movie
 
 /------- All Encompassing
 
-Understanding the different perspectives of project and package developers, tap-i18n provides specific tools for project and package developers, allowing for total coverage and seamless integration into the Meteor package ecosystem.
+/* 
+* Projects developers' needs are not the same as package developers'.
+* Tap-i18n provides specific tools for project and package developers.
+* Total coverage and seamless integration into the Meteor package ecosystem.
+*/
 
 -------/
 
 /------- Transparent Namespacing
 
-You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapaces for you.
+You don't need to worry about domain prefixing or package conflicts when you translate your project or package. Behind the scenes we automatically generate scoped namesapace for you.
 
 -------/
 
@@ -182,21 +186,10 @@ You don't need to worry about domain prefixing or package conflicts when you tra
 /------- deps - package.js
 
 /####### 
-Package.describe({
-  summary: "Dependency mananger to allow reactive callbacks",
-  internal: true
-});
-
 Package.on_use(function (api) {
   api.export('Deps');
   api.add_files('deps.js');
   api.add_files('deprecated.js');
-});
-
-Package.on_test(function (api) {
-  api.use('tinytest');
-  api.use('deps');
-  api.add_files('deps_tests.js', 'client');
 });
 #######/
 
@@ -244,7 +237,7 @@ Package.on_use(function (api) {
 
 <br />
 <br />
-<h3> Defined in package.js, but they are actully: </h3>
+<h3> Defined in package.js, but they are actually: </h3>
 
 /*
 * Fully-fledged Meteor programs in their own right
@@ -318,7 +311,6 @@ Package._transitional_registerBuildPlugin({
 /*
 * If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b
 * Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous
-* Build plugins has no access to npm packages added via Npm.depends
 * Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed
 */ 
 
