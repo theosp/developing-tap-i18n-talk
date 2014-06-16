@@ -48,6 +48,8 @@
 <img width="486" height="50" src="./images/i18n.png">
 <img width="526" height="263" src="./images/i18n2.png">
 </section>
+<section><h2>tap-i18n Demo</h2>
+</section>
 <section><h2>tap-i18n - i18n for Meteor</h2>
 
 <ul>
@@ -298,16 +300,66 @@ Package._transitional_registerBuildPlugin({
 });
 </code></pre>
 </section>
+<section><h2>tap-i18n Handlers Registration</h2>
+
+<pre><code data-trim contenteditable>
+Plugin.registerSourceHandler "i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "package-tap.i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "project-tap.i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "i18n.json", (compileStep) ->
+  ...
+</code></pre>
+</section>
+<section><h2>tap-i18n the Build Process</h2>
+
+<img width="918" height="601" src="./images/tap-i18n-flow.png">
+
+</section>
+<section><h2>The Template Namespace Challenge</h2>
+
+<ul>
+<li>All the templates in a meteor project are added to the same Template object</li>
+<li>Templates in the Template object don't indicate which package indroduced them</li>
+<li>How do you tell which package a template belongs to?</li>
+</ul>
+</section>
+<section><h2>The Template Namespace Challenge</h2>
+
+<pre><code data-trim contenteditable>
+Package.on_use(function (api) {
+  api.use(["tap-i18n"], ["client", "server"]);
+
+  // You must load your package's package-tap.i18n before you load any
+  // template
+  api.add_files("package-tap.i18n", ["client", "server"]);
+
+  // Templates loads (if any)
+
+  // You must load the languages files after you load your templates -
+  // otherwise the templates won't have the i18n capabilities (unless
+  // you'll register them with tap-i18n yourself, see below).
+  api.add_files([
+    "i18n/en.i18n.json",
+    "i18n/fr.i18n.json",
+    "i18n/pt.i18n.json",
+    "i18n/pt-br.i18n.json"
+  ], ["client"]);
+});
+</code></pre>
+</section>
 <section><h2>Build Plugins Pitfalls</h2>
 
 <ul>
 <li>If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b</li>
-<li>Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous</li>
-<li>Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed</li>
+<li>Build plugins must be synchronous</li>
+<li>Clients refresh only if the build content changed</li>
 </ul>
-</section>
-<section><h2>tap-i18n Build Plugin - Live Overview</h2>
-
 </section>
 <section><h2>Testing Build Plugins with Configurable Build Options - Live Overview</h2>
 

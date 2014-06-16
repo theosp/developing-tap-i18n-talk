@@ -11,6 +11,9 @@
 >>> i18n2.png 526 263
 -------/
 
+/------- tap-i18n Demo
+-------/
+
 /------- tap-i18n - i18n for Meteor
 
 /*
@@ -306,19 +309,76 @@ Package._transitional_registerBuildPlugin({
 
 -------/
 
+/------- tap-i18n Handlers Registration
+
+/####### 
+Plugin.registerSourceHandler "i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "package-tap.i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "project-tap.i18n", (compileStep) ->
+  ...
+
+Plugin.registerSourceHandler "i18n.json", (compileStep) ->
+  ...
+#######/
+
+-------/
+
+/------- tap-i18n the Build Process
+
+>>> tap-i18n-flow.png 918 601
+
+-------/
+
+/------- The Template Namespace Challenge
+
+/*
+* All the templates in a meteor project are added to the same Template object
+* Templates in the Template object don't indicate which package indroduced them
+* How do you tell which package a template belongs to?
+*/
+
+-------/
+
+/------- The Template Namespace Challenge
+
+/#######
+Package.on_use(function (api) {
+  api.use(["tap-i18n"], ["client", "server"]);
+
+  // You must load your package's package-tap.i18n before you load any
+  // template
+  api.add_files("package-tap.i18n", ["client", "server"]);
+
+  // Templates loads (if any)
+
+  // You must load the languages files after you load your templates -
+  // otherwise the templates won't have the i18n capabilities (unless
+  // you'll register them with tap-i18n yourself, see below).
+  api.add_files([
+    "i18n/en.i18n.json",
+    "i18n/fr.i18n.json",
+    "i18n/pt.i18n.json",
+    "i18n/pt-br.i18n.json"
+  ], ["client"]);
+});
+#######/
+
+-------/
+
 /------- Build Plugins Pitfalls
 
 /*
 * If you want to register a plugin for the xxx.a.b extension, you must first register a plugin for xxx.b
-* Build plugins must be synchronous, Meteor will just start itself before the build is done if parts of the build are asynchronous
-* Meteor will rebuild the project once any of its files changes but will refresh the clients only if the build content changed
+* Build plugins must be synchronous
+* Clients refresh only if the build content changed
 */ 
 
 -------/
 
-/------- tap-i18n Build Plugin - Live Overview
-
--------/
 
 /------- Testing Build Plugins with Configurable Build Options - Live Overview
 
